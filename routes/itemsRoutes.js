@@ -34,6 +34,20 @@ router.get('/:name', (req, res, next) => {
   return res.json(item);
 });
 
+// PATCH /items/:name
+router.patch('/:name', (req, res, next) => {
+  const itemIndex = items.findIndex((item) => item.name === req.params.name);
+
+  if (itemIndex === -1) {
+    throw new ExpressShoppingListError('Item can not be found.', 404);
+  }
+
+  items[itemIndex].name = req.body.name || items[itemIndex].name;
+  items[itemIndex].price = req.body.price || items[itemIndex].price;
+
+  return res.json(items[itemIndex]);
+});
+
 // ==================================================
 
 module.exports = router;

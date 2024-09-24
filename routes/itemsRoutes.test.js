@@ -77,3 +77,47 @@ describe('GET /items/:name', () => {
     expect(resp.statusCode).toBe(404);
   });
 });
+
+describe('PATCH /items/:name', () => {
+  const url = '/items/popsicle';
+
+  beforeEach(() => {
+    items.push(JSON.parse(JSON.stringify(item1)));
+  });
+
+  test('Modifies a single item.', async () => {
+    // Act
+    const resp = await request(app).patch(url).send(item2);
+
+    // Assert
+    expect(resp.statusCode).toBe(200);
+    expect(resp.body).toEqual(item2);
+    expect(items).toEqual([item2]);
+  });
+
+  test('Partially modifies a single item.', async () => {
+    // Arrange
+    const requestBody = { price: 10 };
+    const expectedItem = { ...item1, ...requestBody };
+
+    // Act
+    const resp = await request(app).patch(url).send(requestBody);
+
+    // Assert
+    expect(resp.statusCode).toBe(200);
+    expect(resp.body).toEqual(expectedItem);
+    expect(items).toEqual([expectedItem]);
+  });
+
+  test('Returns 404 if item does not exist.', async () => {
+    // Arrange
+    const url = '/items/lemon';
+
+    // Act
+    const resp = await request(app).patch(url).send(item2);
+
+    // Assert
+    expect(resp.statusCode).toBe(404);
+    expect(items).toEqual([item1]);
+  });
+});

@@ -49,3 +49,31 @@ describe('POST /items', () => {
     expect(items).toEqual([item1]);
   });
 });
+
+describe('GET /items/:name', () => {
+  const url = '/items/popsicle';
+
+  beforeEach(() => {
+    items.push(JSON.parse(JSON.stringify(item1)));
+  });
+
+  test('Gets a single item.', async () => {
+    // Act
+    const resp = await request(app).get(url);
+
+    // Assert
+    expect(resp.statusCode).toBe(200);
+    expect(resp.body).toEqual(item1);
+  });
+
+  test('Returns 404 if item does not exist.', async () => {
+    // Arrange
+    const url = '/items/lemon';
+
+    // Act
+    const resp = await request(app).get(url);
+
+    // Assert
+    expect(resp.statusCode).toBe(404);
+  });
+});

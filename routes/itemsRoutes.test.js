@@ -35,3 +35,17 @@ describe('GET /items', () => {
     expect(resp.body).toEqual([item1, item2]);
   });
 });
+
+describe('POST /items', () => {
+  const url = '/items';
+
+  test('Adds a new item into the shopping list.', async () => {
+    // Act
+    const resp = await request(app).post(url).send(item1);
+
+    // Assert
+    expect(resp.statusCode).toBe(201);
+    expect(resp.body).toEqual(item1);
+    expect(items).toEqual([item1]);
+  });
+});

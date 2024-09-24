@@ -3,6 +3,7 @@
 const express = require('express');
 const morgan = require('morgan');
 
+const itemsRoutes = require('./routes/itemsRoutes');
 const ExpressShoppingListError = require('./errors/expressShoppingListError');
 
 // ==================================================
@@ -11,6 +12,8 @@ const app = express();
 
 app.use(express.json());
 app.use(morgan('dev'));
+
+app.use('/items', itemsRoutes);
 
 // handle unrecognized routes
 app.get((req, res, next) => {

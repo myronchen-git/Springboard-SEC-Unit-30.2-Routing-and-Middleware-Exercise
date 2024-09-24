@@ -1,0 +1,26 @@
+{
+    "name": "springboard-sec-unit-30.2-routing-and-middleware-exercise",
+    "version": "1.0.0",
+    "main": "server.js",
+    "scripts": {
+        "test": "jest"
+    },
+    "repository": {
+        "type": "git",
+        "url": "git+ssh://git@github.com/myronchen-git/Springboard-SEC-Unit-30.2-Routing-and-Middleware-Exercise.git"
+    },
+    "author": "Myron Chen",
+    "license": "ISC",
+    "bugs": {
+        "url": "https://github.com/myronchen-git/Springboard-SEC-Unit-30.2-Routing-and-Middleware-Exercise/issues"
+    },
+    "homepage": "https://github.com/myronchen-git/Springboard-SEC-Unit-30.2-Routing-and-Middleware-Exercise#readme",
+    "description": "",
+    "dependencies": {
+        "express": "^4.21.0",
+        "morgan": "^1.10.0"
+    },
+    "devDependencies": {
+        "supertest": "^7.0.0"
+    }
+}

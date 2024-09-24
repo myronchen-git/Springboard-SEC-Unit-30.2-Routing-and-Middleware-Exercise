@@ -18,6 +18,13 @@ router.get('', (req, res, next) => {
 
 // POST /items
 router.post('', (req, res, next) => {
+  if (!req.body.name || !req.body.price) {
+    throw new ExpressShoppingListError(
+      'Item info is missing name or price.',
+      400
+    );
+  }
+
   const item = { name: req.body.name, price: req.body.price };
   items.push(item);
   return res.status(201).json(item);

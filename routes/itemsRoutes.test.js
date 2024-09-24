@@ -48,6 +48,22 @@ describe('POST /items', () => {
     expect(resp.body).toEqual(item1);
     expect(items).toEqual([item1]);
   });
+
+  // prettier-ignore
+  test.each([
+    [{ name: 'popsicle' }],
+    [{ price: '1.00' }]
+  ])(
+    'Giving incomplete info should response with a 400.',
+    async (requestBody) => {
+      // Act
+      const resp = await request(app).post(url).send(requestBody);
+
+      // Assert
+      expect(resp.statusCode).toBe(400);
+      expect(items).toEqual([]);
+    }
+  );
 });
 
 describe('GET /items/:name', () => {

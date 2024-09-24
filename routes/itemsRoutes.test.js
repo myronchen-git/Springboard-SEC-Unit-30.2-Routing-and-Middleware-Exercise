@@ -121,3 +121,33 @@ describe('PATCH /items/:name', () => {
     expect(items).toEqual([item1]);
   });
 });
+
+describe('DELETE /items/:name', () => {
+  const url = '/items/popsicle';
+
+  beforeEach(() => {
+    items.push(JSON.parse(JSON.stringify(item1)));
+  });
+
+  test('Deletes a shopping list item.', async () => {
+    // Act
+    const resp = await request(app).delete(url);
+
+    // Assert
+    expect(resp.statusCode).toBe(200);
+    expect(resp.body).toEqual({ message: 'Deleted' });
+    expect(items).toEqual([]);
+  });
+
+  test('Returns 404 if item does not exist.', async () => {
+    // Arrange
+    const url = '/items/lemon';
+
+    // Act
+    const resp = await request(app).delete(url);
+
+    // Assert
+    expect(resp.statusCode).toBe(404);
+    expect(items).toEqual([item1]);
+  });
+});

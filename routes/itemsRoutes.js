@@ -48,6 +48,19 @@ router.patch('/:name', (req, res, next) => {
   return res.json(items[itemIndex]);
 });
 
+// DELETE /items/:name
+router.delete('/:name', (req, res, next) => {
+  const itemIndex = items.findIndex((item) => item.name === req.params.name);
+
+  if (itemIndex === -1) {
+    throw new ExpressShoppingListError('Item can not be found.', 404);
+  }
+
+  items.splice(itemIndex, 1);
+
+  return res.json({ message: 'Deleted' });
+});
+
 // ==================================================
 
 module.exports = router;

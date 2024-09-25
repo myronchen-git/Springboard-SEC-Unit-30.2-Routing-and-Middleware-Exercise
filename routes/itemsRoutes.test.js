@@ -5,25 +5,27 @@ process.env.NODE_ENV = 'test';
 const request = require('supertest');
 
 const app = require('../app');
-const items = require('../fakeDb');
+const { STORAGE_FILE } = require('../constants');
+const FileHandler = require('../util/fileHandler');
 
 // ==================================================
+
+const fileHandler = new FileHandler(STORAGE_FILE);
+
+// --------------------------------------------------
 
 const item1 = Object.freeze({ name: 'popsicle', price: 1.45 });
 const item2 = Object.freeze({ name: 'cheerios', price: 3.4 });
 
-afterEach(() => {
-  items.length = 0;
+afterAll(() => {
+  fileHandler.write([]);
 });
 
 describe('GET /items', () => {
   const url = '/items';
 
   beforeEach(() => {
-    items.push(
-      JSON.parse(JSON.stringify(item1)),
-      JSON.parse(JSON.stringify(item2))
-    );
+    fileHandler.write([item1, item2]);
   });
 
   test('Gets a list of shopping items.', async () => {
@@ -39,6 +41,10 @@ describe('GET /items', () => {
 describe('POST /items', () => {
   const url = '/items';
 
+  beforeEach(() => {
+    fileHandler.write([]);
+  });
+
   test('Adds a new item into the shopping list.', async () => {
     // Act
     const resp = await request(app).post(url).send(item1);
@@ -46,6 +52,8 @@ describe('POST /items', () => {
     // Assert
     expect(resp.statusCode).toBe(201);
     expect(resp.body).toEqual(item1);
+
+    const items = fileHandler.read();
     expect(items).toEqual([item1]);
   });
 
@@ -61,6 +69,8 @@ describe('POST /items', () => {
 
       // Assert
       expect(resp.statusCode).toBe(400);
+
+      const items = fileHandler.read();
       expect(items).toEqual([]);
     }
   );
@@ -70,7 +80,7 @@ describe('GET /items/:name', () => {
   const url = '/items/popsicle';
 
   beforeEach(() => {
-    items.push(JSON.parse(JSON.stringify(item1)));
+    fileHandler.write([item1]);
   });
 
   test('Gets a single item.', async () => {
@@ -98,7 +108,7 @@ describe('PATCH /items/:name', () => {
   const url = '/items/popsicle';
 
   beforeEach(() => {
-    items.push(JSON.parse(JSON.stringify(item1)));
+    fileHandler.write([item1]);
   });
 
   test('Modifies a single item.', async () => {
@@ -108,6 +118,8 @@ describe('PATCH /items/:name', () => {
     // Assert
     expect(resp.statusCode).toBe(200);
     expect(resp.body).toEqual(item2);
+
+    const items = fileHandler.read();
     expect(items).toEqual([item2]);
   });
 
@@ -122,6 +134,8 @@ describe('PATCH /items/:name', () => {
     // Assert
     expect(resp.statusCode).toBe(200);
     expect(resp.body).toEqual(expectedItem);
+
+    const items = fileHandler.read();
     expect(items).toEqual([expectedItem]);
   });
 
@@ -134,6 +148,8 @@ describe('PATCH /items/:name', () => {
 
     // Assert
     expect(resp.statusCode).toBe(404);
+
+    const items = fileHandler.read();
     expect(items).toEqual([item1]);
   });
 });
@@ -142,7 +158,7 @@ describe('DELETE /items/:name', () => {
   const url = '/items/popsicle';
 
   beforeEach(() => {
-    items.push(JSON.parse(JSON.stringify(item1)));
+    fileHandler.write([item1]);
   });
 
   test('Deletes a shopping list item.', async () => {
@@ -152,6 +168,8 @@ describe('DELETE /items/:name', () => {
     // Assert
     expect(resp.statusCode).toBe(200);
     expect(resp.body).toEqual({ message: 'Deleted' });
+
+    const items = fileHandler.read();
     expect(items).toEqual([]);
   });
 
@@ -164,6 +182,8 @@ describe('DELETE /items/:name', () => {
 
     // Assert
     expect(resp.statusCode).toBe(404);
+
+    const items = fileHandler.read();
     expect(items).toEqual([item1]);
   });
 });

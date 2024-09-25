@@ -1,12 +1,24 @@
 'use strict';
 
+const fs = require('fs');
+
 const express = require('express');
 const morgan = require('morgan');
 
 const itemsRoutes = require('./routes/itemsRoutes');
 const ExpressShoppingListError = require('./errors/expressShoppingListError');
+const { STORAGE_FILE } = require('./constants');
+const FileHandler = require('./util/fileHandler');
 
 // ==================================================
+
+const fileHandler = new FileHandler(STORAGE_FILE);
+
+// --------------------------------------------------
+
+if (!fs.existsSync(STORAGE_FILE)) {
+  fileHandler.write([]);
+}
 
 const app = express();
 
